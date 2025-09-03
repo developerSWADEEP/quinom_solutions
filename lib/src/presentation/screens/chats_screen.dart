@@ -46,9 +46,9 @@ class _ChatsScreenState extends State<ChatsScreen> {
               itemBuilder: (context, i) {
                 final c = state.chats[i];
                 return ListTile(
-                  title: Text(c.otherUserName),
+                  title: Text(c.otherUserName, style: TextStyle(fontWeight: FontWeight.bold),),
                   subtitle: Text(c.lastMessage, maxLines: 1, overflow: TextOverflow.ellipsis),
-                  trailing: Text(TimeOfDay.fromDateTime(c.updatedAt).format(context)),
+                  trailing: Text(TimeOfDay.fromDateTime(c.updatedAt.toLocal()).format(context)),
                   onTap: () => context.push('/chat/${c.id}'),
                 );
               },

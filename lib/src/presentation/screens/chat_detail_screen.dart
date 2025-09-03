@@ -4,6 +4,7 @@ import '../../presentation/bloc/auth/auth_bloc.dart';
 import '../../presentation/bloc/messages/messages_bloc.dart';
 import '../../data/models/message.dart';
 import '../../core/network/socket_service.dart';
+import 'package:intl/intl.dart';
 
 class ChatDetailScreen extends StatefulWidget {
   final String chatId;
@@ -16,7 +17,6 @@ class ChatDetailScreen extends StatefulWidget {
 class _ChatDetailScreenState extends State<ChatDetailScreen> {
   final _controller = TextEditingController();
   final _scrollController = ScrollController();
-
 
   @override
   void initState() {
@@ -33,6 +33,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   void dispose() {
     context.read<SocketService>().disconnect();
     super.dispose();
+  }
+
+  String _formatTime(DateTime? dt) {
+    if (dt == null) return '';
+    return DateFormat('hh:mm a').format(dt); // e.g. "10:45 AM"
   }
 
   @override
@@ -71,7 +76,20 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                             color: isMine ? Colors.indigo.shade100 : Colors.grey.shade200,
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Text(m.content),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(m.content),
+                              const SizedBox(height: 4),
+                              Text(
+                                _formatTime(m.sentAt?.toLocal()), // ✅ show time
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     },

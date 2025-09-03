@@ -6,7 +6,12 @@ class ChatItem extends Equatable {
   final DateTime updatedAt;
   final String otherUserName;
 
-  const ChatItem({required this.id, required this.lastMessage, required this.updatedAt, required this.otherUserName});
+  const ChatItem({
+    required this.id,
+    required this.lastMessage,
+    required this.updatedAt,
+    required this.otherUserName,
+  });
 
   factory ChatItem.fromJson(Map<String, dynamic> json, String currentUserId) {
     final participants = json['participants'] as List? ?? [];
@@ -15,14 +20,18 @@ class ChatItem extends Equatable {
       orElse: () => {'name': 'Unknown'},
     );
 
+    // Extract lastMessage content and createdAt safely
+    final lastMessageData = json['lastMessage'] as Map<String, dynamic>?;
+
     return ChatItem(
       id: json['_id']?.toString() ?? '',
-      lastMessage: json['lastMessage']?.toString() ?? '',
-      updatedAt: DateTime.tryParse(json['updatedAt']?.toString() ?? '') ?? DateTime.now(),
+      lastMessage: lastMessageData?['content']?.toString() ?? '',
+      updatedAt: DateTime.tryParse(lastMessageData?['createdAt']?.toString() ?? '') ??
+          DateTime.tryParse(json['updatedAt']?.toString() ?? '') ??
+          DateTime.now(),
       otherUserName: otherUser['name']?.toString() ?? 'Unknown',
     );
   }
-
 
   @override
   List<Object?> get props => [id, lastMessage, updatedAt, otherUserName];
